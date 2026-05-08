@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ada — Enkeltmannsforetak skal være enkelt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4EFE8;
+    --bg-warm: #EFE8DD;
+    --ink: #1A1612;
+    --ink-soft: #4A4338;
+    --ink-muted: #7A7165;
+    --accent: #B8431C;
+    --accent-deep: #8C3214;
+    --green: #2D5A4F;
+    --line: #D9D0C2;
+    --paper: #FAF6EF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .display {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 30, "opsz" 144;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  /* Nav */
+  nav { padding: 28px 0; border-bottom: 1px solid var(--line); }
+  .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 100, "opsz" 144;
+    font-size: 28px; font-weight: 500; letter-spacing: -0.04em;
+  }
+  .logo span { color: var(--accent); }
+  .nav-cta {
+    background: var(--ink); color: var(--paper);
+    padding: 10px 20px; border-radius: 100px;
+    text-decoration: none; font-size: 14px; font-weight: 500;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--accent); }
+
+  /* Hero */
+  .hero { padding: 100px 0 80px; position: relative; }
+
+  .eyebrow {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--accent); margin-bottom: 28px;
+    padding: 6px 14px; border: 1px solid var(--accent); border-radius: 100px;
+  }
+
+  h1.hero-title {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 50, "opsz" 144;
+    font-weight: 400;
+    font-size: clamp(52px, 8vw, 116px);
+    line-height: 0.95; letter-spacing: -0.04em;
+    margin-bottom: 32px; max-width: 16ch;
+  }
+  h1.hero-title em {
+    font-style: italic;
+    font-variation-settings: "SOFT" 100, "opsz" 144;
+    color: var(--accent);
+  }
+
+  .hero-promise {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-variation-settings: "SOFT" 80;
+    font-size: clamp(24px, 3vw, 32px);
+    color: var(--ink); margin-bottom: 24px;
+    max-width: 24ch; line-height: 1.2;
+  }
+
+  .hero-sub {
+    font-size: 19px; line-height: 1.5;
+    max-width: 600px; color: var(--ink-soft); margin-bottom: 48px;
+  }
+
+  .cta-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--ink); color: var(--paper);
+    padding: 18px 32px; border-radius: 100px;
+    text-decoration: none; font-size: 16px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--accent); transform: translateY(-1px); }
+  .btn-primary svg { transition: transform 0.2s; }
+  .btn-primary:hover svg { transform: translateX(4px); }
+
+  .btn-secondary {
+    color: var(--ink); text-decoration: none;
+    font-size: 15px; font-weight: 500;
+    padding: 18px 0; border-bottom: 1px solid var(--ink); padding-bottom: 4px;
+  }
+
+  /* Demo card */
+  .demo-card {
+    margin-top: 100px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 640px;
+    box-shadow: 0 30px 60px -30px rgba(26, 22, 18, 0.18);
+    position: relative;
+  }
+  .demo-card::before {
+    content: "ONSDAG, 08:14";
+    position: absolute; top: -12px; left: 24px;
+    background: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--ink-muted);
+    letter-spacing: 0.1em; padding: 2px 12px;
+  }
+  .msg { display: flex; gap: 14px; margin-bottom: 24px; }
+  .msg:last-child { margin-bottom: 0; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--accent); color: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 100;
+    font-weight: 500; flex-shrink: 0;
+  }
+  .avatar.user { background: var(--green); }
+  .msg-body { flex: 1; }
+  .msg-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .msg-name span { color: var(--ink-muted); font-weight: 400; margin-left: 6px; }
+  .msg-text { font-size: 15px; color: var(--ink-soft); }
+
+  .action-list {
+    margin-top: 12px; padding: 14px 16px;
+    background: var(--bg-warm);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px; font-size: 14px;
+  }
+  .action-list .row {
+    padding: 4px 0; display: flex;
+    align-items: center; gap: 10px; color: var(--ink);
+  }
+  .action-list .row::before {
+    content: "✓"; color: var(--accent);
+    font-weight: 600; flex-shrink: 0;
+  }
+
+  /* Stats */
+  .stats {
+    padding: 140px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .stat-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+  .big-stat {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 80, "opsz" 144;
+    font-size: clamp(120px, 18vw, 220px);
+    line-height: 0.85; letter-spacing: -0.05em;
+    color: var(--accent); font-weight: 300;
+  }
+  .big-stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: var(--ink-muted);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-top: 16px;
+  }
+  .stat-text {
+    font-family: 'Fraunces', serif;
+    font-size: 28px; line-height: 1.25; letter-spacing: -0.015em;
+  }
+  .stat-text em { font-style: italic; color: var(--accent); }
+  .source {
+    margin-top: 24px; font-size: 13px;
+    color: var(--ink-muted); font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Workflow */
+  .workflow { padding: 140px 0; }
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--accent); margin-bottom: 24px;
+  }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 50;
+    font-size: clamp(48px, 6vw, 84px);
+    line-height: 1.0; letter-spacing: -0.03em;
+    margin-bottom: 24px; max-width: 18ch;
+  }
+  .section-title em { font-style: italic; color: var(--accent); }
+  .section-sub {
+    font-size: 19px; color: var(--ink-soft);
+    max-width: 56ch; margin-bottom: 80px;
+  }
+
+  .steps { display: grid; gap: 0; }
+  .step {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr;
+    gap: 60px; padding: 48px 0;
+    border-top: 1px solid var(--line);
+    align-items: start;
+  }
+  .step:last-child { border-bottom: 1px solid var(--line); }
+  .step-num {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 100;
+    font-style: italic;
+    font-size: 56px; color: var(--accent);
+    line-height: 1; font-weight: 300;
+  }
+  .step-title {
+    font-family: 'Fraunces', serif;
+    font-size: 28px; line-height: 1.15; letter-spacing: -0.015em;
+  }
+  .step-desc {
+    font-size: 16px; color: var(--ink-soft); line-height: 1.6;
+  }
+
+  /* Scope section */
+  .scope {
+    padding: 140px 32px;
+    background: var(--bg-warm);
+  }
+  .scope-inner { max-width: 1180px; margin: 0 auto; }
+  .scope-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; margin-top: 64px;
+  }
+  .scope-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+  }
+  .scope-tag {
+    position: absolute; top: 24px; right: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 4px 10px; border-radius: 100px;
+    background: var(--green); color: var(--paper);
+  }
+  .scope-tag.coming {
+    background: transparent;
+    border: 1px solid var(--ink-muted);
+    color: var(--ink-muted);
+  }
+  .scope-card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px; line-height: 1.15;
+    margin-bottom: 12px; margin-top: 28px;
+    letter-spacing: -0.015em;
+  }
+  .scope-card-desc {
+    font-size: 14px; color: var(--ink-soft); line-height: 1.5;
+  }
+
+  /* Compare */
+  .compare { padding: 140px 0; }
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 32px; margin-top: 64px;
+  }
+  .compare-col {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 40px;
+  }
+  .compare-col.highlight {
+    border-color: var(--ink);
+    box-shadow: 0 30px 60px -30px rgba(26, 22, 18, 0.18);
+  }
+  .compare-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--ink-muted);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+  .compare-col.highlight .compare-label { color: var(--accent); }
+  .compare-name {
+    font-family: 'Fraunces', serif;
+    font-size: 32px; margin-bottom: 24px; letter-spacing: -0.02em;
+  }
+  .compare-list { list-style: none; }
+  .compare-list li {
+    padding: 14px 0; border-top: 1px solid var(--line);
+    font-size: 16px; display: flex; align-items: flex-start;
+    gap: 12px; color: var(--ink-soft);
+  }
+  .compare-list li::before {
+    content: "—"; color: var(--ink-muted); flex-shrink: 0;
+  }
+  .compare-col.highlight .compare-list li::before {
+    content: "✓"; color: var(--accent);
+  }
+  .compare-col.highlight .compare-list li { color: var(--ink); }
+
+  /* CTA */
+  .final-cta { padding: 160px 0; text-align: center; }
+  .final-cta .section-title { margin: 0 auto 32px; max-width: 16ch; }
+  .final-cta .section-sub { margin: 0 auto 48px; }
+  .partner-card {
+    max-width: 560px; margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 16px; padding: 40px; text-align: left;
+  }
+  .partner-perks { list-style: none; margin-bottom: 32px; }
+  .partner-perks li {
+    padding: 12px 0; border-bottom: 1px solid var(--line);
+    display: flex; gap: 12px; align-items: flex-start; font-size: 15px;
+  }
+  .partner-perks li::before { content: "→"; color: var(--accent); font-weight: 600; }
+
+  .signup-form { display: flex; gap: 8px; margin-top: 8px; }
+  .signup-form input {
+    flex: 1; padding: 16px 18px;
+    border: 1px solid var(--line); border-radius: 100px;
+    background: var(--bg); font-family: inherit;
+    font-size: 15px; color: var(--ink);
+  }
+  .signup-form input:focus { outline: none; border-color: var(--ink); }
+  .signup-form button {
+    background: var(--ink); color: var(--paper);
+    border: none; padding: 16px 28px; border-radius: 100px;
+    font-family: inherit; font-size: 15px; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+  }
+  .signup-form button:hover { background: var(--accent); }
+  .form-note {
+    font-size: 13px; color: var(--ink-muted);
+    margin-top: 12px; text-align: center;
+  }
+
+  footer {
+    padding: 48px 0;
+    border-top: 1px solid var(--line);
+    color: var(--ink-muted); font-size: 14px;
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  @media (max-width: 760px) {
+    .container { padding: 0 24px; }
+    .scope { padding: 80px 24px; }
+    .hero { padding: 60px 0 40px; }
+    .hero-sub { font-size: 17px; }
+    .hero-promise { font-size: 22px; }
+    .demo-card { padding: 24px; margin-top: 60px; }
+    .stats, .workflow, .compare, .final-cta { padding: 80px 0; }
+    .stat-grid { grid-template-columns: 1fr; gap: 40px; }
+    .step { grid-template-columns: 1fr; gap: 16px; padding: 32px 0; }
+    .step-num { font-size: 40px; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .scope-grid { grid-template-columns: 1fr; }
+    .signup-form { flex-direction: column; }
+    .signup-form button { width: 100%; }
+  }
+
+  .fade-in {
+    opacity: 0; transform: translateY(20px);
+    animation: fade 0.8s ease forwards;
+  }
+  @keyframes fade { to { opacity: 1; transform: translateY(0); } }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.5s; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <div class="logo">Ada<span>.</span></div>
+    <a href="#bli-partner" class="nav-cta">Bli design partner</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow fade-in">FOR ENKELTPERSONFORETAK</div>
+    <h1 class="hero-title display fade-in delay-1">
+      Enkeltmannsforetak<br>
+      skal være <em>enkelt</em>.
+    </h1>
+    <p class="hero-promise fade-in delay-2">
+      Du fakturerer. Ada gjør resten.
+    </p>
+    <p class="hero-sub fade-in delay-3">
+      AI-medarbeideren for selvstendige som heller vil jobbe med faget enn med papirarbeid. Ada leser e-postene dine, lager tilbud, fører timer, sender faktura, jager betaling — og snakker med Skatteetaten, NAV og Brønnøysund på vegne av deg.
+    </p>
+    <div class="cta-row fade-in delay-4">
+      <a href="#bli-partner" class="btn-primary">
+        Få tidlig tilgang
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#hvordan" class="btn-secondary">Se hvordan det funker</a>
+    </div>
+
+    <div class="demo-card fade-in delay-5">
+      <div class="msg">
+        <div class="avatar user">M</div>
+        <div class="msg-body">
+          <div class="msg-name">Maria <span>· 08:12</span></div>
+          <div class="msg-text">Våknet syk. Tar dagen.</div>
+        </div>
+      </div>
+      <div class="msg">
+        <div class="avatar">A</div>
+        <div class="msg-body">
+          <div class="msg-name">Ada <span>· 08:14</span></div>
+          <div class="msg-text">Beklager det! God bedring. Jeg tar resten:</div>
+          <div class="action-list">
+            <div class="row">Egenmelding sendt til NAV</div>
+            <div class="row">Acme varslet, møte flyttet til torsdag</div>
+            <div class="row">Kalender blokkert ut uka</div>
+            <div class="row">Sykepengegrunnlag oppdatert</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="container">
+    <div class="stat-grid">
+      <div>
+        <div class="big-stat display">43</div>
+        <div class="big-stat-label">etater å rapportere til</div>
+      </div>
+      <div>
+        <p class="stat-text">
+          Norske småbedrifter rapporterer i snitt til <em>43 ulike offentlige etater</em> og bruker 11 timer i måneden bare på skjemaer. Det er tid bort fra det du faktisk er god på.
+        </p>
+        <p class="source">KILDE: NHO, REGNSKAP NORGE OG REVISORFORENINGEN, 2024</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="workflow" id="hvordan">
+  <div class="container">
+    <div class="section-eyebrow">SLIK FUNKER DET</div>
+    <h2 class="section-title display">
+      En medarbeider, ikke <em>et verktøy</em>.
+    </h2>
+    <p class="section-sub">
+      Andre verktøy gjør hver oppgave litt enklere. Ada gjør oppgavene for deg, på tvers av e-post, kalender, bank og myndigheter. Du logger ikke inn — du svarer ja eller nei.
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title display">Henvendelser kommer på e-post.</div>
+        <div class="step-desc">Ada leser dem, foreslår tilbud basert på tidligere prosjekter og din timepris, sender når du gir grønt lys.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title display">Prosjektet starter.</div>
+        <div class="step-desc">Ada genererer kontrakten, blokkerer kalenderen, registrerer timer fra møter og notater, og kategoriserer alle prosjektkostnader automatisk.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title display">Måneden slutter.</div>
+        <div class="step-desc">Ada lager fakturautkast, du sjekker, du sender. Ingen manuell timeregistrering, ingen excel-ark, ingen søndagskvelder.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title display">Livet skjer.</div>
+        <div class="step-desc">Du blir syk. Du får barn. En kunde betaler for sent. Ada håndterer NAV-meldinger, kundekommunikasjon og oppfølging — uten at du må huske hva som skal gjøres.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-title display">Året slutter.</div>
+        <div class="step-desc">MVA-meldingen er ferdig utfylt. Næringsspesifikasjonen er klar. Skattemeldingen er gjennomgått, fradrag funnet, klar til levering.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scope">
+  <div class="scope-inner">
+    <div class="section-eyebrow">MER ENN REGNSKAP</div>
+    <h2 class="section-title display">
+      Alt det <em>administrative</em> — på ett sted.
+    </h2>
+    <p class="section-sub">
+      Ada er ikke et regnskapsprogram med AI på toppen. Det er en agent som håndterer hele det administrative livet til en ENK. Vi bygger ut bredden i moduler — her er veikartet.
+    </p>
+
+    <div class="scope-grid">
+      <div class="scope-card">
+        <span class="scope-tag">KLAR</span>
+        <h3 class="scope-card-title">Faktura og oppfølging</h3>
+        <p class="scope-card-desc">Tilbud, kontrakter, fakturering, purring og betalingsoppfølging — automatisk på tvers av e-post og bank.</p>
+      </div>
+      <div class="scope-card">
+        <span class="scope-tag">KLAR</span>
+        <h3 class="scope-card-title">Regnskap og MVA</h3>
+        <p class="scope-card-desc">Bokføring, kategorisering av kostnader, MVA-rapportering til Skatteetaten — uten at du logger inn på Altinn.</p>
+      </div>
+      <div class="scope-card">
+        <span class="scope-tag">KLAR</span>
+        <h3 class="scope-card-title">Skattemelding</h3>
+        <p class="scope-card-desc">Næringsspesifikasjon ferdig utfylt, fradrag identifisert, kontrollert mot transaksjoner gjennom året.</p>
+      </div>
+      <div class="scope-card">
+        <span class="scope-tag coming">KOMMER</span>
+        <h3 class="scope-card-title">NAV og sykmelding</h3>
+        <p class="scope-card-desc">Egenmelding, sykepengesøknad, foreldrepenger som selvstendig. Hjelp til ordninger du har krav på men aldri søker om.</p>
+      </div>
+      <div class="scope-card">
+        <span class="scope-tag coming">KOMMER</span>
+        <h3 class="scope-card-title">Forsikring og pensjon</h3>
+        <p class="scope-card-desc">Riktig dekning til riktig pris. Påminnelser, fornyelser, og hjelp til å sette av til pensjon før skatt.</p>
+      </div>
+      <div class="scope-card">
+        <span class="scope-tag coming">KOMMER</span>
+        <h3 class="scope-card-title">GDPR og kontrakter</h3>
+        <p class="scope-card-desc">Databehandleravtaler, NDA-er, oppdragsbekreftelser — generert, signert og lagret riktig.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="compare">
+  <div class="container">
+    <div class="section-eyebrow">FORSKJELLEN</div>
+    <h2 class="section-title display">
+      Verktøy <em>vs.</em> medarbeider.
+    </h2>
+
+    <div class="compare-grid">
+      <div class="compare-col">
+        <div class="compare-label">DAGENS LØSNINGER</div>
+        <div class="compare-name display">Regnskapsverktøy</div>
+        <ul class="compare-list">
+          <li>Du logger inn og gjør jobben selv</li>
+          <li>Ett system per oppgave — regnskap, kontrakt, NAV separat</li>
+          <li>Du kategoriserer og bokfører</li>
+          <li>Du oppretter og sender faktura</li>
+          <li>Du følger opp betaling</li>
+          <li>Du leverer MVA og skatt</li>
+        </ul>
+      </div>
+      <div class="compare-col highlight">
+        <div class="compare-label">MED ADA</div>
+        <div class="compare-name display">AI-medarbeider</div>
+        <ul class="compare-list">
+          <li>Ada handler, du godkjenner</li>
+          <li>Ett sted, alle systemer — e-post, bank, kalender, etater</li>
+          <li>Bokført automatisk i bakgrunnen</li>
+          <li>Faktura foreslås, du sier «send»</li>
+          <li>Purring sendes uten at du tenker på det</li>
+          <li>MVA, skatt og NAV-meldinger ferdig utfylt</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta" id="bli-partner">
+  <div class="container">
+    <div class="section-eyebrow">DESIGN PARTNER PROGRAMMET</div>
+    <h2 class="section-title display">
+      Bli en av de første <em>ti</em>.
+    </h2>
+    <p class="section-sub">
+      Vi velger ti ENK-konsulenter som skal forme produktet sammen med oss. I bytte mot tilbakemeldinger får du gratis tilgang i seks måneder og direkte linje til oss.
+    </p>
+
+    <div class="partner-card">
+      <ul class="partner-perks">
+        <li>Gratis tilgang i 6 måneder, deretter 50 % rabatt for alltid</li>
+        <li>Månedlige samtaler hvor du former hva vi bygger</li>
+        <li>Prioritert support direkte med grunnleggerne</li>
+        <li>Din logo på lanseringssiden, hvis du ønsker det</li>
+      </ul>
+      <form class="signup-form" onsubmit="event.preventDefault(); alert('Takk! Vi tar kontakt innen 48 timer.');">
+        <input type="email" placeholder="din@e-post.no" required>
+        <button type="submit">Søk om plass</button>
+      </form>
+      <p class="form-note">Vi leser hver søknad personlig. Vi svarer alle innen 48 timer.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <div>Ada AS · Bergen · Bygges nå</div>
+    <div class="mono">v0.2 · 2026</div>
+  </div>
+</footer>
+
+</body>
+</html>
