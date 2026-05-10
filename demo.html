@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ada — Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4EFE8;
+    --bg-warm: #EFE8DD;
+    --ink: #1A1612;
+    --ink-soft: #4A4338;
+    --ink-muted: #7A7165;
+    --accent: #B8431C;
+    --accent-deep: #8C3214;
+    --green: #2D5A4F;
+    --line: #D9D0C2;
+    --paper: #FAF6EF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    height: 100vh;
+  }
+  .display {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 30, "opsz" 144;
+    letter-spacing: -0.02em;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Topplinje */
+  .topbar {
+    height: 56px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 100;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+  }
+  .logo span { color: var(--accent); }
+  .demo-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 4px 10px;
+    border: 1px solid var(--accent);
+    border-radius: 100px;
+  }
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--green);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 100;
+    font-weight: 500;
+  }
+
+  /* Grid layout */
+  .dashboard {
+    display: grid;
+    grid-template-columns: 320px 1fr 380px;
+    grid-template-rows: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    height: calc(100vh - 56px - 88px);
+  }
+  .panel {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .panel-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-warm);
+  }
+  .panel-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .panel-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-muted);
+    background: var(--paper);
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+  .panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  /* Innboks (venstre, høy) */
+  .panel-innboks { grid-row: 1 / 3; grid-column: 1; }
+  .epost-item {
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .epost-item:hover { background: var(--bg-warm); }
+  .epost-from {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .epost-subject {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .epost-preview {
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  /* Aktivitet (midten, høy) */
+  .panel-aktivitet { grid-row: 1 / 3; grid-column: 2; }
+  .aktivitet-tom {
+    padding: 60px 32px;
+    text-align: center;
+    color: var(--ink-muted);
+  }
+  .aktivitet-tom-tittel {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    color: var(--ink);
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .aktivitet-tom-tekst {
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 30ch;
+    margin: 0 auto;
+  }
+  .aktivitet-item {
+    padding: 14px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: var(--bg-warm);
+    border-left: 3px solid var(--accent);
+    animation: fadeInUp 0.4s ease;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .aktivitet-tid {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .aktivitet-tekst {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .aktivitet-detalj {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: var(--paper);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+  }
+
+  /* Regnskap (høyre topp) */
+  .panel-regnskap { grid-row: 1; grid-column: 3; }
+  .regnskap-rad {
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+  .regnskap-rad:hover { background: var(--bg-warm); }
+  .regnskap-tekst { color: var(--ink-soft); }
+  .regnskap-belop { font-family: 'JetBrains Mono', monospace; color: var(--ink); }
+  .panel-tom-tekst {
+    padding: 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  /* Fakturaer (høyre bunn) */
+  .panel-fakturaer { grid-row: 2; grid-column: 3; }
+  .faktura-rad {
+    padding: 12px 14px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    background: var(--bg-warm);
+    border-left: 3px solid var(--green);
+  }
+  .faktura-kunde {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .faktura-belop {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  /* Kommandolinje (bunn) */
+  .kommandolinje {
+    height: 88px;
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    padding: 16px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .kommando-form {
+    display: flex;
+    gap: 10px;
+  }
+  .kommando-form input {
+    flex: 1;
+    padding: 14px 20px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    background: var(--bg);
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .kommando-form input:focus {
+    outline: none;
+    border-color: var(--ink);
+  }
+  .kommando-form button {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 0 28px;
+    border-radius: 100px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .kommando-form button:hover { background: var(--accent); }
+  .kommando-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .kommando-forslag {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .forslag-knapp {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .forslag-knapp:hover {
+    background: var(--bg-warm);
+    color: var(--ink);
+    border-color: var(--ink-soft);
+  }
+
+  /* Tenker-indikator */
+  .tenker {
+    padding: 14px 16px;
+    background: var(--bg-warm);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+  .tenker-prikker {
+    display: inline-flex;
+    gap: 3px;
+  }
+  .tenker-prikker span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--ink-muted);
+    animation: tenker 1.4s infinite;
+  }
+  .tenker-prikker span:nth-child(2) { animation-delay: 0.2s; }
+  .tenker-prikker span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes tenker {
+    0%, 60%, 100% { opacity: 0.3; }
+    30% { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">Ada<span>.</span></div>
+    <div class="demo-badge">DEMO · MARIAS DASHBOARD</div>
+  </div>
+  <div class="user-info">
+    <span>Maria Hansen · UX-designer</span>
+    <div class="user-avatar">M</div>
+  </div>
+</div>
+
+<div class="dashboard">
+  <!-- Innboks -->
+  <div class="panel panel-innboks">
+    <div class="panel-header">
+      <div class="panel-title">Innboks</div>
+      <div class="panel-count" id="innboks-count">0</div>
+    </div>
+    <div class="panel-body" id="innboks-liste">
+      <div class="panel-tom-tekst">Laster e-poster...</div>
+    </div>
+  </div>
+
+  <!-- Aktivitet -->
+  <div class="panel panel-aktivitet">
+    <div class="panel-header">
+      <div class="panel-title">Hva Ada gjør</div>
+      <div class="panel-count" id="aktivitet-count">0</div>
+    </div>
+    <div class="panel-body" id="aktivitet-liste">
+      <div class="aktivitet-tom">
+        <div class="aktivitet-tom-tittel display">Be Ada om noe.</div>
+        <div class="aktivitet-tom-tekst">Skriv en oppgave nederst, så ser du Ada jobbe på Marias innboks i sanntid.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Regnskap -->
+  <div class="panel panel-regnskap">
+    <div class="panel-header">
+      <div class="panel-title">Regnskap mai</div>
+      <div class="panel-count" id="regnskap-count">0</div>
+    </div>
+    <div class="panel-body" id="regnskap-liste">
+      <div class="panel-tom-tekst">Ingen bokføringer ennå.</div>
+    </div>
+  </div>
+
+  <!-- Fakturaer -->
+  <div class="panel panel-fakturaer">
+    <div class="panel-header">
+      <div class="panel-title">Fakturaer</div>
+      <div class="panel-count" id="fakturaer-count">0</div>
+    </div>
+    <div class="panel-body" id="fakturaer-liste">
+      <div class="panel-tom-tekst">Ingen fakturaer ennå.</div>
+    </div>
+  </div>
+</div>
+
+<div class="kommandolinje">
+  <form class="kommando-form" id="kommando-form">
+    <input
+      type="text"
+      id="kommando-input"
+      placeholder="Be Ada om en oppgave..."
+      autocomplete="off"
+    />
+    <button type="submit" id="kommando-knapp">Send</button>
+  </form>
+  <div class="kommando-forslag">
+    <button class="forslag-knapp" data-tekst="Bokfør Figma-kvitteringen">Bokfør Figma-kvitteringen</button>
+    <button class="forslag-knapp" data-tekst="Lag svarutkast til Vestland Logistikk">Svar Vestland Logistikk</button>
+    <button class="forslag-knapp" data-tekst="Lag faktura til Acme på 35 timer">Faktura til Acme</button>
+    <button class="forslag-knapp" data-tekst="Sjekk kalenderen min for uke 20">Sjekk kalender</button>
+  </div>
+</div>
+
+<script>
+  // KONFIGURASJON — bytt ut med din Render-URL
+  const BACKEND_URL = 'https://ada-backend-3ogy.onrender.com';
+
+  // === Last innboksen når siden åpnes ===
+  async function lastInnboks() {
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/innboks`);
+      const eposter = await res.json();
+      visInnboks(eposter);
+    } catch (e) {
+      console.error('Kunne ikke laste innboks:', e);
+      document.getElementById('innboks-liste').innerHTML =
+        '<div class="panel-tom-tekst">Kunne ikke koble til Ada. Server starter opp — prøv igjen om et minutt.</div>';
+    }
+  }
+
+  function visInnboks(eposter) {
+    const liste = document.getElementById('innboks-liste');
+    document.getElementById('innboks-count').textContent = eposter.length;
+    liste.innerHTML = eposter.map(e => `
+      <div class="epost-item">
+        <div class="epost-from">${e.fra.split('<')[0].trim()}</div>
+        <div class="epost-subject">${e.emne}</div>
+        <div class="epost-preview">${e.innhold.substring(0, 100)}...</div>
+      </div>
+    `).join('');
+  }
+
+  // === Send kommando til Ada ===
+  document.getElementById('kommando-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = document.getElementById('kommando-input');
+    const tekst = input.value.trim();
+    if (!tekst) return;
+
+    sendKommando(tekst);
+    input.value = '';
+  });
+
+  document.querySelectorAll('.forslag-knapp').forEach(knapp => {
+    knapp.addEventListener('click', () => {
+      sendKommando(knapp.dataset.tekst);
+    });
+  });
+
+  async function sendKommando(tekst) {
+    const knapp = document.getElementById('kommando-knapp');
+    const aktivitetListe = document.getElementById('aktivitet-liste');
+
+    // Fjern "tom"-meldingen
+    if (aktivitetListe.querySelector('.aktivitet-tom')) {
+      aktivitetListe.innerHTML = '';
+    }
+
+    knapp.disabled = true;
+
+    // Vis brukerens kommando
+    leggTilAktivitet(`Maria sa: «${tekst}»`, null, 'bruker');
+
+    // Vis tenker-indikator
+    const tenker = document.createElement('div');
+    tenker.className = 'tenker';
+    tenker.innerHTML = 'Ada tenker <span class="tenker-prikker"><span></span><span></span><span></span></span>';
+    aktivitetListe.appendChild(tenker);
+    aktivitetListe.scrollTop = aktivitetListe.scrollHeight;
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ melding: tekst, okt_id: 'demo' })
+      });
+      const data = await res.json();
+
+      tenker.remove();
+
+      // Vis hver handling
+      data.handlinger.forEach(h => {
+        leggTilAktivitet(handlingTekst(h), formaterInput(h), 'handling');
+      });
+
+      // Vis Adas svar
+      if (data.svar) {
+        leggTilAktivitet(data.svar, null, 'ada');
+      }
+
+      // Oppdater paneler
+      oppdaterTilstand(data.tilstand);
+
+    } catch (e) {
+      tenker.remove();
+      leggTilAktivitet('Kunne ikke koble til Ada. Prøv igjen.', null, 'feil');
+    }
+
+    knapp.disabled = false;
+  }
+
+  function handlingTekst(h) {
+    const navn = {
+      'send_epost_utkast': '✉️ Ada lagde et e-postutkast',
+      'bokfor_kvittering': '📒 Ada bokførte en kvittering',
+      'sjekk_kalender': '📅 Ada sjekket kalenderen',
+      'lag_faktura': '📄 Ada lagde et fakturautkast'
+    };
+    return navn[h.verktoy] || `Ada brukte ${h.verktoy}`;
+  }
+
+  function formaterInput(h) {
+    if (h.verktoy === 'send_epost_utkast') {
+      return `Til: ${h.input.til}\nEmne: ${h.input.emne}\n\n${h.input.innhold}`;
+    }
+    if (h.verktoy === 'bokfor_kvittering') {
+      return `${h.input.beskrivelse} — ${h.input.beloep} kr (${h.input.kategori})`;
+    }
+    if (h.verktoy === 'sjekk_kalender') {
+      return h.resultat;
+    }
+    if (h.verktoy === 'lag_faktura') {
+      return `${h.input.kunde}: ${h.input.timer} t × ${h.input.timepris} kr = ${h.input.timer * h.input.timepris * 1.25} kr inkl. mva`;
+    }
+    return JSON.stringify(h.input);
+  }
+
+  function leggTilAktivitet(tekst, detalj, type) {
+    const liste = document.getElementById('aktivitet-liste');
+    const tid = new Date().toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' });
+    const item = document.createElement('div');
+    item.className = 'aktivitet-item';
+    item.innerHTML = `
+      <div class="aktivitet-tid">${tid}</div>
+      <div class="aktivitet-tekst">${tekst}</div>
+      ${detalj ? `<div class="aktivitet-detalj">${detalj}</div>` : ''}
+    `;
+    liste.appendChild(item);
+    liste.scrollTop = liste.scrollHeight;
+
+    // Oppdater teller
+    const antall = liste.querySelectorAll('.aktivitet-item').length;
+    document.getElementById('aktivitet-count').textContent = antall;
+  }
+
+  function oppdaterTilstand(tilstand) {
+    // Regnskap
+    const regnskap = document.getElementById('regnskap-liste');
+    document.getElementById('regnskap-count').textContent = tilstand.regnskap.length;
+    if (tilstand.regnskap.length === 0) {
+      regnskap.innerHTML = '<div class="panel-tom-tekst">Ingen bokføringer ennå.</div>';
+    } else {
+      regnskap.innerHTML = tilstand.regnskap.map(r => `
+        <div class="regnskap-rad">
+          <span class="regnskap-tekst">${r.beskrivelse}</span>
+          <span class="regnskap-belop">${r.beloep} kr</span>
+        </div>
+      `).join('');
+    }
+
+    // Fakturaer
+    const fakturaer = document.getElementById('fakturaer-liste');
+    document.getElementById('fakturaer-count').textContent = tilstand.fakturaer.length;
+    if (tilstand.fakturaer.length === 0) {
+      fakturaer.innerHTML = '<div class="panel-tom-tekst">Ingen fakturaer ennå.</div>';
+    } else {
+      fakturaer.innerHTML = tilstand.fakturaer.map(f => `
+        <div class="faktura-rad">
+          <div class="faktura-kunde">${f.kunde}</div>
+          <div class="faktura-belop">${f.total_inkl_mva} kr inkl. mva</div>
+        </div>
+      `).join('');
+    }
+  }
+
+  // Last innboksen ved oppstart
+  lastInnboks();
+</script>
+
+</body>
+</html>
