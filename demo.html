@@ -220,14 +220,60 @@
     color: var(--ink);
     line-height: 1.5;
   }
-  .aktivitet-detalj {
+  .aktivitet-detalj-wrapper {
     margin-top: 8px;
-    padding: 10px 12px;
+  }
+  .aktivitet-detalj-toggle {
+    font-size: 12px;
+    color: var(--accent);
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    user-select: none;
+  }
+  .aktivitet-detalj-toggle:hover {
+    color: var(--accent-deep);
+  }
+  .aktivitet-detalj-innhold {
+    margin-top: 10px;
+    padding: 14px 16px;
     background: var(--paper);
     border-radius: 6px;
     font-size: 13px;
     color: var(--ink-soft);
+    display: none;
+    border-left: 2px solid var(--line);
+  }
+  .aktivitet-detalj-innhold.apen {
+    display: block;
+  }
+  .detalj-rad {
+    padding: 4px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .detalj-label {
+    color: var(--ink-muted);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .detalj-tekst {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--line);
+    line-height: 1.6;
+    color: var(--ink);
     white-space: pre-wrap;
+  }
+  .detalj-total {
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+    font-weight: 600;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
   }
 
   /* Regnskap (høyre topp) */
@@ -496,17 +542,14 @@
     const knapp = document.getElementById('kommando-knapp');
     const aktivitetListe = document.getElementById('aktivitet-liste');
 
-    // Fjern "tom"-meldingen
     if (aktivitetListe.querySelector('.aktivitet-tom')) {
       aktivitetListe.innerHTML = '';
     }
 
     knapp.disabled = true;
 
-    // Vis brukerens kommando
-    leggTilAktivitet(`Maria sa: «${tekst}»`, null, 'bruker');
+    leggTilAktivitet(`Maria sa: «${tekst}»`, null, 'bruker', false);
 
-    // Vis tenker-indikator
     const tenker = document.createElement('div');
     tenker.className = 'tenker';
     tenker.innerHTML = 'Ada tenker <span class="tenker-prikker"><span></span><span></span><span></span></span>';
@@ -523,22 +566,19 @@
 
       tenker.remove();
 
-      // Vis hver handling
       data.handlinger.forEach(h => {
-        leggTilAktivitet(handlingTekst(h), formaterInput(h), 'handling');
+        leggTilAktivitet(handlingTekst(h), formaterDetalj(h), 'handling', true);
       });
 
-      // Vis Adas svar
       if (data.svar) {
-        leggTilAktivitet(data.svar, null, 'ada');
+        leggTilAktivitet(data.svar, null, 'ada', false);
       }
 
-      // Oppdater paneler
       oppdaterTilstand(data.tilstand);
 
     } catch (e) {
       tenker.remove();
-      leggTilAktivitet('Kunne ikke koble til Ada. Prøv igjen.', null, 'feil');
+      leggTilAktivitet('Kunne ikke koble til Ada. Prøv igjen.', null, 'feil', false);
     }
 
     knapp.disabled = false;
@@ -554,36 +594,69 @@
     return navn[h.verktoy] || `Ada brukte ${h.verktoy}`;
   }
 
-  function formaterInput(h) {
+  function formaterDetalj(h) {
     if (h.verktoy === 'send_epost_utkast') {
-      return `Til: ${h.input.til}\nEmne: ${h.input.emne}\n\n${h.input.innhold}`;
+      return `
+        <div class="detalj-rad"><span class="detalj-label">Til:</span> <span>${h.input.til}</span></div>
+        <div class="detalj-rad"><span class="detalj-label">Emne:</span> <span>${h.input.emne}</span></div>
+        <div class="detalj-tekst">${h.input.innhold}</div>
+      `;
     }
     if (h.verktoy === 'bokfor_kvittering') {
-      return `${h.input.beskrivelse} — ${h.input.beloep} kr (${h.input.kategori})`;
+      return `
+        <div class="detalj-rad"><span class="detalj-label">Beskrivelse:</span> <span>${h.input.beskrivelse}</span></div>
+        <div class="detalj-rad"><span class="detalj-label">Beløp:</span> <span>${h.input.beloep} kr</span></div>
+        <div class="detalj-rad"><span class="detalj-label">Kategori:</span> <span>${h.input.kategori}</span></div>
+      `;
     }
     if (h.verktoy === 'sjekk_kalender') {
-      return h.resultat;
+      return `<div class="detalj-tekst">${h.resultat}</div>`;
     }
     if (h.verktoy === 'lag_faktura') {
-      return `${h.input.kunde}: ${h.input.timer} t × ${h.input.timepris} kr = ${h.input.timer * h.input.timepris * 1.25} kr inkl. mva`;
+      const eks = h.input.timer * h.input.timepris;
+      const inkl = eks * 1.25;
+      return `
+        <div class="detalj-rad"><span class="detalj-label">Kunde:</span> <span>${h.input.kunde}</span></div>
+        <div class="detalj-rad"><span class="detalj-label">Beskrivelse:</span> <span>${h.input.beskrivelse}</span></div>
+        <div class="detalj-rad"><span>${h.input.timer} timer × ${h.input.timepris} kr</span> <span>${eks} kr</span></div>
+        <div class="detalj-rad"><span class="detalj-label">Mva (25%)</span> <span>${eks * 0.25} kr</span></div>
+        <div class="detalj-rad detalj-total"><span>Total inkl. mva</span> <span>${inkl} kr</span></div>
+      `;
     }
     return JSON.stringify(h.input);
   }
 
-  function leggTilAktivitet(tekst, detalj, type) {
+  function leggTilAktivitet(tekst, detaljHTML, type, klikkbar) {
     const liste = document.getElementById('aktivitet-liste');
     const tid = new Date().toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' });
     const item = document.createElement('div');
-    item.className = 'aktivitet-item';
+    item.className = 'aktivitet-item' + (klikkbar ? ' klikkbar' : '');
+    
+    const detaljSeksjon = detaljHTML 
+      ? `<div class="aktivitet-detalj-wrapper">
+           <div class="aktivitet-detalj-toggle">▼ Vis detaljer</div>
+           <div class="aktivitet-detalj-innhold">${detaljHTML}</div>
+         </div>`
+      : '';
+    
     item.innerHTML = `
       <div class="aktivitet-tid">${tid}</div>
       <div class="aktivitet-tekst">${tekst}</div>
-      ${detalj ? `<div class="aktivitet-detalj">${detalj}</div>` : ''}
+      ${detaljSeksjon}
     `;
+    
+    if (klikkbar) {
+      const toggle = item.querySelector('.aktivitet-detalj-toggle');
+      const innhold = item.querySelector('.aktivitet-detalj-innhold');
+      toggle.addEventListener('click', () => {
+        const apent = innhold.classList.toggle('apen');
+        toggle.textContent = apent ? '▲ Skjul detaljer' : '▼ Vis detaljer';
+      });
+    }
+    
     liste.appendChild(item);
     liste.scrollTop = liste.scrollHeight;
 
-    // Oppdater teller
     const antall = liste.querySelectorAll('.aktivitet-item').length;
     document.getElementById('aktivitet-count').textContent = antall;
   }
