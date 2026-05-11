@@ -23,15 +23,16 @@
     --highlight: #FFF3E0;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
     background: var(--bg);
     color: var(--ink);
     font-family: 'Instrument Sans', sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 15px;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    overflow: hidden;
-    height: 100vh;
+    min-height: 100vh;
+    padding-bottom: 100px;
   }
   .display {
     font-family: 'Fraunces', serif;
@@ -42,23 +43,26 @@
 
   /* === Topplinje === */
   .topbar {
-    height: 56px;
+    height: 64px;
     background: var(--paper);
     border-bottom: 1px solid var(--line);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 24px;
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
   .topbar-left {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 18px;
   }
   .logo {
     font-family: 'Fraunces', serif;
     font-variation-settings: "SOFT" 100;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 500;
     letter-spacing: -0.04em;
   }
@@ -69,7 +73,7 @@
     color: var(--accent);
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    padding: 4px 10px;
+    padding: 5px 11px;
     border: 1px solid var(--accent);
     border-radius: 100px;
   }
@@ -83,7 +87,7 @@
     font-size: 12px;
     color: var(--ink-soft);
     background: var(--bg-warm);
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 100px;
   }
   .user-info {
@@ -94,8 +98,8 @@
     color: var(--ink-soft);
   }
   .user-avatar {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     background: var(--green);
     color: var(--paper);
@@ -107,143 +111,162 @@
     font-weight: 500;
   }
 
-  /* === Dashboard grid === */
-  .dashboard {
-    display: grid;
-    grid-template-columns: 280px 1fr 320px;
-    grid-template-rows: 1fr 1fr;
-    gap: 12px;
-    padding: 12px;
-    height: calc(100vh - 56px - 76px);
+  /* === Container === */
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
   }
+
+  /* === HERO-SEKSJON (Det første du ser) === */
+  .hero-seksjon {
+    padding: 64px 0 80px;
+  }
+  .hilsen {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 60;
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin-bottom: 12px;
+  }
+  .hilsen em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hilsen-sub {
+    font-size: 17px;
+    color: var(--ink-soft);
+    margin-bottom: 48px;
+    max-width: 60ch;
+  }
+
+  /* Status-stripe — fire nøkkeltall */
+  .status-stripe {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 64px;
+  }
+  .status-kort {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .status-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+  }
+  .status-tall {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    font-weight: 400;
+  }
+  .status-tall.positiv { color: var(--green); }
+  .status-tall.accent { color: var(--accent); }
+  .status-detalj {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 8px;
+  }
+
+  /* To-kolonne: Venter på deg + Hva Ada gjør */
+  .topp-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 24px;
+  }
+
   .panel {
     background: var(--paper);
     border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
   }
   .panel-header {
-    padding: 12px 16px;
+    padding: 18px 24px;
     border-bottom: 1px solid var(--line);
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: var(--bg-warm);
-    flex-shrink: 0;
   }
   .panel-title {
     font-family: 'Fraunces', serif;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 500;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
   }
   .panel-count {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 11px;
     color: var(--ink-muted);
     background: var(--paper);
-    padding: 2px 8px;
+    padding: 3px 10px;
     border-radius: 100px;
   }
   .panel-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 8px;
+    padding: 16px;
   }
   .panel-tom-tekst {
-    padding: 24px 16px;
+    padding: 40px 24px;
     text-align: center;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--ink-muted);
-  }
-
-  /* === Innboks === */
-  .panel-innboks { grid-row: 1 / 3; grid-column: 1; }
-  .epost-item {
-    padding: 10px 12px;
-    border-radius: 6px;
-    margin-bottom: 4px;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .epost-item:hover { background: var(--bg-warm); }
-  .epost-item.ny {
-    background: var(--highlight);
-    animation: blink 1s ease-in-out;
-  }
-  @keyframes blink {
-    0%, 100% { background: var(--highlight); }
-    50% { background: var(--bg-warm); }
-  }
-  .epost-from {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--ink);
-    margin-bottom: 2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .epost-subject {
-    font-size: 12px;
-    color: var(--ink-soft);
-    margin-bottom: 2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .epost-preview {
-    font-size: 11px;
-    color: var(--ink-muted);
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   /* === Venter på deg === */
-  .panel-venter { grid-row: 1; grid-column: 2; }
   .venter-kort {
-    padding: 12px 14px;
-    border-radius: 8px;
-    margin-bottom: 8px;
+    padding: 18px 20px;
+    border-radius: 10px;
+    margin-bottom: 12px;
     background: var(--bg-warm);
     border-left: 3px solid var(--accent);
     animation: fadeInUp 0.4s ease;
   }
+  .venter-kort:last-child { margin-bottom: 0; }
   .venter-kort.ny {
     animation: fadeInUp 0.4s ease, pulse 2s ease-in-out;
   }
   @keyframes pulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(184, 67, 28, 0); }
-    50% { box-shadow: 0 0 0 6px rgba(184, 67, 28, 0.15); }
+    50% { box-shadow: 0 0 0 8px rgba(184, 67, 28, 0.15); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   .venter-tittel {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--ink);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
   .venter-beskrivelse {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--ink-soft);
-    margin-bottom: 10px;
-    line-height: 1.5;
+    margin-bottom: 14px;
+    line-height: 1.55;
   }
   .venter-handlinger {
     display: flex;
-    gap: 6px;
+    gap: 8px;
   }
   .venter-handlinger button {
-    padding: 6px 14px;
+    padding: 8px 16px;
     border-radius: 100px;
     border: none;
     cursor: pointer;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
   }
   .btn-godkjenn {
@@ -256,228 +279,291 @@
     color: var(--ink-soft);
     border: 1px solid var(--line) !important;
   }
-  .btn-avvis:hover { background: var(--bg-warm); }
+  .btn-avvis:hover { background: var(--paper); }
 
-  /* === Hva Ada gjør === */
-  .panel-puls { grid-row: 2; grid-column: 2; }
+  /* === Hva Ada gjør (kompakt puls) === */
   .puls-item {
-    padding: 8px 12px;
+    padding: 10px 14px;
     border-radius: 6px;
     margin-bottom: 4px;
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
     animation: fadeInLeft 0.3s ease;
   }
+  .puls-item:last-child { margin-bottom: 0; }
   @keyframes fadeInLeft {
     from { opacity: 0; transform: translateX(-8px); }
     to { opacity: 1; transform: translateX(0); }
   }
   .puls-tid {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 11px;
     color: var(--ink-muted);
     flex-shrink: 0;
     padding-top: 1px;
+    min-width: 36px;
   }
   .puls-tekst {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--ink);
-    line-height: 1.4;
+    line-height: 1.45;
   }
 
-  /* === Økonomi === */
-  .panel-okonomi { grid-row: 1; grid-column: 3; }
-  .okonomi-grid {
-    padding: 14px 16px;
+  /* === Detaljerte seksjoner under === */
+  .detalj-seksjon {
+    padding: 64px 0 32px;
+    border-top: 1px solid var(--line);
+    margin-top: 64px;
+  }
+  .seksjon-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 14px;
+  }
+  .seksjon-tittel-stor {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 50;
+    font-size: clamp(32px, 4vw, 44px);
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin-bottom: 18px;
+  }
+  .seksjon-tittel-stor em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .seksjon-undertekst {
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin-bottom: 36px;
+    max-width: 65ch;
+  }
+
+  /* === Innboks-seksjon === */
+  .epost-grid {
     display: grid;
     gap: 10px;
   }
-  .okonomi-rad {
-    display: flex;
-    justify-content: space-between;
+  .epost-item {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 200px 1fr auto;
+    gap: 16px;
     align-items: center;
-    padding: 6px 0;
-    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
   }
-  .okonomi-rad:last-child { border-bottom: none; }
-  .okonomi-label {
-    font-size: 11px;
-    color: var(--ink-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+  .epost-item:hover {
+    border-color: var(--ink-muted);
+    background: var(--paper);
   }
-  .okonomi-tall {
-    font-family: 'JetBrains Mono', monospace;
+  .epost-item.ny {
+    background: var(--highlight);
+    animation: blink 1.5s ease-in-out;
+  }
+  @keyframes blink {
+    0%, 100% { background: var(--highlight); }
+    50% { background: var(--bg-warm); }
+  }
+  .epost-from {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .epost-tekst {
+    min-width: 0;
+  }
+  .epost-subject {
     font-size: 14px;
     color: var(--ink);
+    margin-bottom: 2px;
     font-weight: 500;
   }
-  .okonomi-tall.positiv { color: var(--green); }
-  .okonomi-helse {
-    margin-top: 4px;
-    padding: 10px 12px;
-    background: var(--bg-warm);
-    border-radius: 6px;
-    font-size: 11px;
-    color: var(--ink-soft);
-    line-height: 1.5;
+  .epost-preview {
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-
-  /* === Fakturaer og regnskap === */
-  .panel-fakturaer { grid-row: 2; grid-column: 3; }
-  .seksjon-tittel {
+  .epost-status {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
-    color: var(--ink-muted);
+    color: var(--green);
     text-transform: uppercase;
-    letter-spacing: 0.12em;
-    padding: 8px 12px 4px;
-    margin-top: 4px;
+    letter-spacing: 0.1em;
   }
-  .seksjon-tittel:first-child { margin-top: 0; }
-  .faktura-rad, .regnskap-rad {
-    padding: 8px 12px;
-    border-radius: 6px;
-    margin-bottom: 3px;
+
+  /* === Fakturaer & regnskap === */
+  .to-kolonner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .sub-panel {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .sub-panel-tittel {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    margin-bottom: 16px;
+    letter-spacing: -0.015em;
+  }
+  .faktura-rad {
+    padding: 14px 16px;
+    border-radius: 8px;
+    margin-bottom: 6px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 12px;
-  }
-  .faktura-rad {
     background: var(--bg-warm);
-    border-left: 2px solid var(--green);
+    border-left: 3px solid var(--green);
   }
-  .faktura-rad.utestaende {
-    border-left-color: var(--accent);
-  }
+  .faktura-rad.utestaende { border-left-color: var(--accent); }
   .faktura-info { flex: 1; min-width: 0; }
   .faktura-kunde {
     font-weight: 600;
     color: var(--ink);
-    margin-bottom: 1px;
-    font-size: 12px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 14px;
+    margin-bottom: 3px;
   }
   .faktura-status {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--ink-muted);
     font-family: 'JetBrains Mono', monospace;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
   }
   .faktura-belop {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--ink);
-    margin-left: 8px;
+    margin-left: 12px;
     flex-shrink: 0;
+    font-weight: 500;
   }
-  .regnskap-tekst {
-    color: var(--ink-soft);
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 12px;
+  .regnskap-rad {
+    padding: 10px 16px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    border-bottom: 1px solid var(--line);
   }
-  .regnskap-belop {
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--ink);
-    font-size: 12px;
-    margin-left: 8px;
-    flex-shrink: 0;
-  }
+  .regnskap-rad:last-child { border-bottom: none; margin-bottom: 0; }
+  .regnskap-tekst { color: var(--ink-soft); }
+  .regnskap-belop { font-family: 'JetBrains Mono', monospace; color: var(--ink); font-weight: 500; }
 
   /* === Myndigheter === */
-  .panel-myndigheter { grid-row: 3; grid-column: 1 / 3; }
   .myndighet-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    padding: 4px;
+    gap: 16px;
   }
   .myndighet-kort {
-    padding: 10px 12px;
-    background: var(--bg-warm);
-    border-radius: 6px;
-    border-left: 3px solid var(--green-soft);
+    padding: 22px 24px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    border-left: 4px solid var(--green-soft);
   }
   .myndighet-kort.varsel { border-left-color: var(--accent); }
   .myndighet-etat {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 11px;
     color: var(--ink-muted);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 4px;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
   }
   .myndighet-tittel {
-    font-size: 13px;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
     color: var(--ink);
-    font-weight: 500;
-    margin-bottom: 4px;
-    line-height: 1.3;
+    margin-bottom: 6px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
   }
   .myndighet-status {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--ink-soft);
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
   /* === Kalender === */
-  .panel-kalender { grid-row: 3; grid-column: 3; }
+  .kalender-tidslinje {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px;
+  }
   .kalender-rad {
-    padding: 8px 12px;
-    border-radius: 6px;
-    margin-bottom: 3px;
+    padding: 14px 18px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 12px;
+    gap: 18px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--line);
   }
+  .kalender-rad:last-child { border-bottom: none; }
+  .kalender-rad:hover { background: var(--bg-warm); }
   .kalender-dato {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--ink-muted);
+    font-size: 12px;
+    color: var(--ink);
     background: var(--bg-warm);
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 6px 12px;
+    border-radius: 6px;
     flex-shrink: 0;
+    font-weight: 500;
+    min-width: 90px;
+    text-align: center;
   }
   .kalender-tekst {
     color: var(--ink-soft);
     flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
-  /* === Tre-rad layout for full bredde === */
-  .dashboard {
-    grid-template-rows: minmax(180px, 1.2fr) minmax(180px, 1.2fr) minmax(160px, 1fr);
-  }
-
-  /* === Kommandolinje === */
+  /* === Kommandolinje (fast nederst) === */
   .kommandolinje {
-    height: 76px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: var(--paper);
     border-top: 1px solid var(--line);
-    padding: 12px 24px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    padding: 16px 32px;
+    z-index: 100;
+    box-shadow: 0 -10px 30px -10px rgba(0,0,0,0.05);
+  }
+  .kommando-inner {
+    max-width: 1180px;
+    margin: 0 auto;
   }
   .kommando-form {
     display: flex;
-    gap: 8px;
+    gap: 10px;
   }
   .kommando-form input {
     flex: 1;
-    padding: 12px 18px;
+    padding: 14px 20px;
     border: 1px solid var(--line);
     border-radius: 100px;
     background: var(--bg);
@@ -493,11 +579,11 @@
     background: var(--ink);
     color: var(--paper);
     border: none;
-    padding: 0 24px;
+    padding: 0 28px;
     border-radius: 100px;
     cursor: pointer;
     font-family: inherit;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
   }
   .kommando-form button:hover { background: var(--accent); }
@@ -505,25 +591,25 @@
   .kommando-hint {
     font-size: 11px;
     color: var(--ink-muted);
-    margin-top: 6px;
+    margin-top: 8px;
     text-align: center;
     font-family: 'JetBrains Mono', monospace;
   }
 
-  /* === Toast (popup-melding) === */
+  /* === Toast === */
   .toast {
     position: fixed;
-    bottom: 90px;
-    right: 24px;
+    bottom: 120px;
+    right: 32px;
     background: var(--ink);
     color: var(--paper);
-    padding: 14px 18px;
-    border-radius: 8px;
-    font-size: 13px;
+    padding: 16px 22px;
+    border-radius: 10px;
+    font-size: 14px;
     box-shadow: 0 10px 40px -10px rgba(0,0,0,0.3);
     animation: toastIn 0.3s ease;
-    z-index: 1000;
-    max-width: 320px;
+    z-index: 200;
+    max-width: 340px;
   }
   @keyframes toastIn {
     from { opacity: 0; transform: translateY(20px); }
@@ -532,6 +618,20 @@
   .toast.fade { animation: toastOut 0.3s ease forwards; }
   @keyframes toastOut {
     to { opacity: 0; transform: translateY(20px); }
+  }
+
+  /* === Mobile === */
+  @media (max-width: 760px) {
+    .container { padding: 0 20px; }
+    .status-stripe { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .topp-grid { grid-template-columns: 1fr; gap: 16px; }
+    .to-kolonner { grid-template-columns: 1fr; }
+    .myndighet-grid { grid-template-columns: 1fr; }
+    .epost-item { grid-template-columns: 1fr; gap: 4px; }
+    .epost-status { display: none; }
+    .topbar { padding: 0 20px; }
+    .topbar .user-info span { display: none; }
+    .kommandolinje { padding: 12px 20px; }
   }
 </style>
 </head>
@@ -551,98 +651,123 @@
   </div>
 </div>
 
-<div class="dashboard">
-  <!-- Innboks (venstre, full høyde) -->
-  <div class="panel panel-innboks">
-    <div class="panel-header">
-      <div class="panel-title">Innboks</div>
-      <div class="panel-count" id="innboks-count">0</div>
-    </div>
-    <div class="panel-body" id="innboks-liste"></div>
-  </div>
+<!-- ============ HERO ============ -->
+<section class="hero-seksjon">
+  <div class="container">
+    <h1 class="hilsen display">God ettermiddag, <em>Maria</em>.</h1>
+    <p class="hilsen-sub">Ada har jobbet i bakgrunnen mens du var i møte. Her er det viktigste akkurat nå.</p>
 
-  <!-- Venter på deg (midten øvre) -->
-  <div class="panel panel-venter">
-    <div class="panel-header">
-      <div class="panel-title">Venter på deg</div>
-      <div class="panel-count" id="venter-count">0</div>
-    </div>
-    <div class="panel-body" id="venter-liste"></div>
-  </div>
-
-  <!-- Hva Ada gjør (midten nedre) -->
-  <div class="panel panel-puls">
-    <div class="panel-header">
-      <div class="panel-title">Hva Ada gjør</div>
-      <div class="panel-count" id="puls-count">0</div>
-    </div>
-    <div class="panel-body" id="puls-liste"></div>
-  </div>
-
-  <!-- Økonomi (høyre øvre) -->
-  <div class="panel panel-okonomi">
-    <div class="panel-header">
-      <div class="panel-title">Økonomi mai</div>
-    </div>
-    <div class="okonomi-grid" id="okonomi-info">
-      <div class="okonomi-rad">
-        <span class="okonomi-label">Innbetalt</span>
-        <span class="okonomi-tall positiv" id="okonomi-inn">52 500 kr</span>
+    <!-- Status-stripe -->
+    <div class="status-stripe">
+      <div class="status-kort">
+        <div class="status-label">Cashflow</div>
+        <div class="status-tall positiv" id="status-cashflow">+47 940 kr</div>
+        <div class="status-detalj">Denne måneden</div>
       </div>
-      <div class="okonomi-rad">
-        <span class="okonomi-label">Utestående</span>
-        <span class="okonomi-tall" id="okonomi-ute">28 750 kr</span>
+      <div class="status-kort">
+        <div class="status-label">Utestående</div>
+        <div class="status-tall" id="status-utestaende">28 750 kr</div>
+        <div class="status-detalj">1 faktura, Bjørklund</div>
       </div>
-      <div class="okonomi-rad">
-        <span class="okonomi-label">Utgifter</span>
-        <span class="okonomi-tall" id="okonomi-utgifter">4 360 kr</span>
+      <div class="status-kort">
+        <div class="status-label">Venter på deg</div>
+        <div class="status-tall accent" id="status-venter">0</div>
+        <div class="status-detalj">Saker som krever godkjenning</div>
       </div>
-      <div class="okonomi-helse" id="okonomi-helse">
-        87% av faste utgifter dekket av tilbakevendende inntekter.
+      <div class="status-kort">
+        <div class="status-label">Neste frist</div>
+        <div class="status-tall">10. juni</div>
+        <div class="status-detalj">MVA-melding 1. termin</div>
       </div>
     </div>
-  </div>
 
-  <!-- Fakturaer og regnskap (høyre nedre) -->
-  <div class="panel panel-fakturaer">
-    <div class="panel-header">
-      <div class="panel-title">Fakturaer & regnskap</div>
-    </div>
-    <div class="panel-body" id="fakturaer-liste"></div>
-  </div>
+    <!-- Topp-grid -->
+    <div class="topp-grid">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Venter på deg</div>
+          <div class="panel-count" id="venter-count">0</div>
+        </div>
+        <div class="panel-body" id="venter-liste">
+          <div class="panel-tom-tekst">Ingenting akkurat nå. Ada gir beskjed når det er noe.</div>
+        </div>
+      </div>
 
-  <!-- Myndigheter (bunn venstre, bred) -->
-  <div class="panel panel-myndigheter">
-    <div class="panel-header">
-      <div class="panel-title">Myndigheter</div>
-      <div class="panel-count" id="myndigheter-count">0</div>
-    </div>
-    <div class="panel-body">
-      <div class="myndighet-grid" id="myndigheter-liste"></div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Hva Ada gjør</div>
+          <div class="panel-count" id="puls-count">0</div>
+        </div>
+        <div class="panel-body" id="puls-liste"></div>
+      </div>
     </div>
   </div>
+</section>
 
-  <!-- Kalender (bunn høyre) -->
-  <div class="panel panel-kalender">
-    <div class="panel-header">
-      <div class="panel-title">Kalender & frister</div>
-    </div>
-    <div class="panel-body" id="kalender-liste"></div>
+<!-- ============ INNBOKS ============ -->
+<section class="detalj-seksjon">
+  <div class="container">
+    <div class="seksjon-eyebrow">INNBOKS</div>
+    <h2 class="seksjon-tittel-stor display">Ada leser hver e-post — du svarer på det <em>viktige</em>.</h2>
+    <p class="seksjon-undertekst">Rutinepost håndteres automatisk. Når noe trenger ditt input, dukker det opp i "Venter på deg".</p>
+    <div class="epost-grid" id="innboks-liste"></div>
   </div>
-</div>
+</section>
 
+<!-- ============ FAKTURAER OG REGNSKAP ============ -->
+<section class="detalj-seksjon">
+  <div class="container">
+    <div class="seksjon-eyebrow">FAKTURAER & REGNSKAP</div>
+    <h2 class="seksjon-tittel-stor display">Bokført, sendt, fulgt opp — <em>automatisk</em>.</h2>
+    <p class="seksjon-undertekst">Ada matcher banktransaksjoner mot fakturaer, kategoriserer kvitteringer, og purrer kunder som ikke betaler i tide.</p>
+    <div class="to-kolonner">
+      <div class="sub-panel">
+        <div class="sub-panel-tittel">Fakturaer</div>
+        <div id="fakturaer-liste"></div>
+      </div>
+      <div class="sub-panel">
+        <div class="sub-panel-tittel">Bokført denne måneden</div>
+        <div id="regnskap-liste"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MYNDIGHETER ============ -->
+<section class="detalj-seksjon">
+  <div class="container">
+    <div class="seksjon-eyebrow">MYNDIGHETER</div>
+    <h2 class="seksjon-tittel-stor display">Skatteetaten, NAV, Altinn — Ada <em>snakker med dem alle</em>.</h2>
+    <p class="seksjon-undertekst">43 etater å rapportere til. Ada holder oversikt slik at du slipper.</p>
+    <div class="myndighet-grid" id="myndigheter-liste"></div>
+  </div>
+</section>
+
+<!-- ============ KALENDER ============ -->
+<section class="detalj-seksjon">
+  <div class="container">
+    <div class="seksjon-eyebrow">KALENDER & FRISTER</div>
+    <h2 class="seksjon-tittel-stor display">Ingen frister glipper. <em>Ingen møter glemmes</em>.</h2>
+    <p class="seksjon-undertekst">Ada holder kalenderen oppdatert med kundemøter, fakturaforfall, MVA-frister og fornyelser.</p>
+    <div class="kalender-tidslinje" id="kalender-liste"></div>
+  </div>
+</section>
+
+<!-- ============ KOMMANDOLINJE ============ -->
 <div class="kommandolinje">
-  <form class="kommando-form" id="kommando-form">
-    <input
-      type="text"
-      id="kommando-input"
-      placeholder="Be Ada om en spesifikk oppgave..."
-      autocomplete="off"
-    />
-    <button type="submit" id="kommando-knapp">Send</button>
-  </form>
-  <div class="kommando-hint">
-    Ada jobber automatisk i bakgrunnen — bruk dette feltet for å gi henne spesifikke oppgaver.
+  <div class="kommando-inner">
+    <form class="kommando-form" id="kommando-form">
+      <input
+        type="text"
+        id="kommando-input"
+        placeholder="Be Ada om en spesifikk oppgave..."
+        autocomplete="off"
+      />
+      <button type="submit" id="kommando-knapp">Send</button>
+    </form>
+    <div class="kommando-hint">
+      Ada jobber automatisk i bakgrunnen — bruk dette feltet for å gi henne spesifikke oppgaver.
+    </div>
   </div>
 </div>
 
@@ -651,18 +776,18 @@
 
   // === Forhåndsfylt historikk ===
   const INNBOKS_START = [
-    { fra: 'Acme AS', emne: 'Faktura mai', preview: 'Hei Maria, takk for fakturaen. Vi betaler 14 dager etter mottak...', ny: false },
-    { fra: 'Figma', emne: 'Kvittering: Figma Professional', preview: 'Takk for kjøpet. Beløp: 180 kr. Faktura vedlagt.', ny: false },
-    { fra: 'Adobe', emne: 'Faktura: Creative Cloud', preview: 'Månedlig abonnement: 590 kr. Trekt 12. mai.', ny: false },
-    { fra: 'Tibber', emne: 'Strømregning mai', preview: 'Beløp: 1 240 kr. Forfall: 28. mai.', ny: false },
-    { fra: 'Sparebank 1', emne: 'Banktransaksjon registrert', preview: 'Innbetaling 52 500 kr fra Acme AS. Faktura #2024-04-12.', ny: false },
-    { fra: 'Skatteetaten', emne: 'Påminnelse: MVA-melding', preview: 'Frist for MVA-melding for 1. termin er 10. juni. Sjekk Altinn.', ny: false }
+    { fra: 'Acme AS', emne: 'Faktura mai', preview: 'Hei Maria, takk for fakturaen. Vi betaler 14 dager etter mottak.', status: 'BESVART AUTO' },
+    { fra: 'Figma', emne: 'Kvittering: Figma Professional', preview: 'Takk for kjøpet. Beløp: 180 kr.', status: 'BOKFØRT' },
+    { fra: 'Adobe', emne: 'Faktura: Creative Cloud', preview: 'Månedlig abonnement: 590 kr. Trekt 12. mai.', status: 'BOKFØRT' },
+    { fra: 'Tibber', emne: 'Strømregning mai', preview: 'Beløp: 1 240 kr. Forfall: 28. mai.', status: 'FLAGGET' },
+    { fra: 'Sparebank 1', emne: 'Banktransaksjon registrert', preview: 'Innbetaling 52 500 kr fra Acme AS.', status: 'MATCHET' },
+    { fra: 'Skatteetaten', emne: 'Påminnelse: MVA-melding', preview: 'Frist for MVA-melding for 1. termin er 10. juni.', status: 'KLARGJORT' }
   ];
 
   const FAKTURAER_START = [
-    { kunde: 'Acme AS', belop: '52 500 kr', status: 'BETALT 12. MAI', utestaende: false },
-    { kunde: 'Bjørklund Bygg', belop: '28 750 kr', status: 'FORFALL 25. MAI', utestaende: true },
-    { kunde: 'Vestland Logistikk', belop: '14 200 kr', status: 'BETALT 8. MAI', utestaende: false }
+    { kunde: 'Acme AS', belop: '52 500 kr', status: 'Betalt 12. mai', utestaende: false },
+    { kunde: 'Bjørklund Bygg', belop: '28 750 kr', status: 'Forfall 25. mai', utestaende: true },
+    { kunde: 'Vestland Logistikk', belop: '14 200 kr', status: 'Betalt 8. mai', utestaende: false }
   ];
 
   const REGNSKAP_START = [
@@ -683,15 +808,15 @@
 
   const KALENDER_START = [
     { dato: '15. mai', tekst: 'Møte med Vestland Logistikk' },
-    { dato: '20. mai', tekst: 'Workshop Bjørklund' },
-    { dato: '25. mai', tekst: 'Bjørklund-faktura forfall' },
-    { dato: '1. juni', tekst: 'Notion DBA-fornyelse (auto)' },
-    { dato: '10. juni', tekst: 'MVA-frist 1. termin' }
+    { dato: '20. mai', tekst: 'Workshop hos Bjørklund Bygg' },
+    { dato: '25. mai', tekst: 'Bjørklund-faktura forfaller' },
+    { dato: '1. juni', tekst: 'Notion databehandleravtale fornyes automatisk' },
+    { dato: '10. juni', tekst: 'MVA-melding 1. termin — frist' }
   ];
 
   const PULS_START = [
     { tid: '14:18', tekst: 'Bokførte Adobe Creative Cloud (590 kr)' },
-    { tid: '13:52', tekst: 'Svarte automatisk på Figma kvittering' },
+    { tid: '13:52', tekst: 'Svarte automatisk på Figma-kvittering' },
     { tid: '12:34', tekst: 'Matchede banktransaksjon mot faktura' },
     { tid: '11:08', tekst: 'Klassifiserte 3 e-poster' },
     { tid: '09:45', tekst: 'Daglig oppsummering sendt' }
@@ -702,14 +827,14 @@
     { delay: 5000, type: 'bank', data: {
       tid: '14:38',
       pulsTekst: 'Matchede 12 450 kr fra Acme mot faktura',
-      faktura: { kunde: 'Acme AS (delbet.)', belop: '12 450 kr', status: 'BETALT 14:38', utestaende: false },
-      okonomi: { inn: 64950 }
+      faktura: { kunde: 'Acme AS (delbet.)', belop: '12 450 kr', status: 'Betalt 14:38', utestaende: false }
     }},
     { delay: 13000, type: 'epost', data: {
       tid: '14:46',
       fra: 'Bjørklund Bygg',
       emne: 'Trenger fakturakopi',
       preview: 'Hei, kan du sende meg en kopi av april-fakturaen? Har rotet bort.',
+      status: 'SVART AUTO',
       pulsTekst: 'Sendte fakturakopi til Bjørklund Bygg (rutine)'
     }},
     { delay: 8000, type: 'venter', data: {
@@ -722,8 +847,7 @@
     { delay: 11000, type: 'regnskap', data: {
       tid: '15:02',
       pulsTekst: 'Bokførte taxiregning som reise (Acme-prosjekt)',
-      regnskap: { tekst: 'Taxi til Acme-møte', belop: '240 kr' },
-      okonomi: { utgifter: 4600 }
+      regnskap: { tekst: 'Taxi til Acme-møte', belop: '240 kr' }
     }},
     { delay: 22000, type: 'myndighet', data: {
       tid: '15:09',
@@ -741,6 +865,7 @@
       fra: 'Lærdal Kommune',
       emne: 'UX-prosjekt Q3',
       preview: 'Hei, vi vurderer å hyre inn UX-kompetanse for ny intern portal. Har du kapasitet?',
+      status: 'FLAGGET',
       pulsTekst: 'Ny henvendelse fra Lærdal Kommune — flagget'
     }},
     { delay: 4000, type: 'venter', data: {
@@ -768,13 +893,12 @@
     { delay: 5000, type: 'regnskap', data: {
       tid: '15:52',
       pulsTekst: 'Bokførte Adobe-faktura (590 kr, Programvare)',
-      regnskap: { tekst: 'Adobe Creative Cloud (mai)', belop: '590 kr' },
-      okonomi: { utgifter: 5190 }
+      regnskap: { tekst: 'Adobe Creative Cloud (mai)', belop: '590 kr' }
     }},
     { delay: 19000, type: 'kalender', data: {
       tid: '16:08',
       pulsTekst: 'GDPR: Notion-databehandleravtale fornyes 1. juni',
-      kalender: { dato: '1. juni', tekst: 'Notion DBA-fornyelse (auto)' }
+      kalender: { dato: '1. juni', tekst: 'Notion DBA fornyes automatisk' }
     }},
     { delay: 9000, type: 'puls', data: {
       tid: '16:14',
@@ -793,9 +917,14 @@
     }}
   ];
 
-  // === Hjelpefunksjoner ===
+  // === Telling ===
   let venterCount = 0;
   let pulsCount = 0;
+
+  function oppdaterVenterStatus() {
+    document.getElementById('venter-count').textContent = venterCount;
+    document.getElementById('status-venter').textContent = venterCount;
+  }
 
   function visToast(tekst) {
     const toast = document.createElement('div');
@@ -812,10 +941,7 @@
     item.className = 'puls-item';
     item.innerHTML = `<span class="puls-tid">${tid}</span><span class="puls-tekst">${tekst}</span>`;
     liste.insertBefore(item, liste.firstChild);
-    // Behold maks 6 elementer
-    while (liste.children.length > 6) {
-      liste.removeChild(liste.lastChild);
-    }
+    while (liste.children.length > 6) liste.removeChild(liste.lastChild);
     pulsCount++;
     document.getElementById('puls-count').textContent = pulsCount;
   }
@@ -826,18 +952,21 @@
     item.className = 'epost-item' + (ny ? ' ny' : '');
     item.innerHTML = `
       <div class="epost-from">${epost.fra}</div>
-      <div class="epost-subject">${epost.emne}</div>
-      <div class="epost-preview">${epost.preview}</div>
+      <div class="epost-tekst">
+        <div class="epost-subject">${epost.emne}</div>
+        <div class="epost-preview">${epost.preview}</div>
+      </div>
+      <div class="epost-status">${epost.status}</div>
     `;
     liste.insertBefore(item, liste.firstChild);
-    document.getElementById('innboks-count').textContent = liste.children.length;
-    if (ny) {
-      setTimeout(() => item.classList.remove('ny'), 2000);
-    }
+    if (ny) setTimeout(() => item.classList.remove('ny'), 2500);
   }
 
   function leggTilVenter(data) {
     const liste = document.getElementById('venter-liste');
+    const tom = liste.querySelector('.panel-tom-tekst');
+    if (tom) tom.remove();
+    
     const kort = document.createElement('div');
     kort.className = 'venter-kort ny';
     kort.innerHTML = `
@@ -856,7 +985,10 @@
       setTimeout(() => {
         kort.remove();
         venterCount--;
-        document.getElementById('venter-count').textContent = venterCount;
+        oppdaterVenterStatus();
+        if (venterCount === 0) {
+          liste.innerHTML = '<div class="panel-tom-tekst">Ingenting akkurat nå. Ada gir beskjed når det er noe.</div>';
+        }
       }, 400);
       visToast('Godkjent — Ada gjør resten.');
       leggTilPuls(new Date().toLocaleTimeString('nb-NO', {hour:'2-digit', minute:'2-digit'}), `Godkjent: ${data.tittel}`);
@@ -869,31 +1001,22 @@
       setTimeout(() => {
         kort.remove();
         venterCount--;
-        document.getElementById('venter-count').textContent = venterCount;
+        oppdaterVenterStatus();
+        if (venterCount === 0) {
+          liste.innerHTML = '<div class="panel-tom-tekst">Ingenting akkurat nå. Ada gir beskjed når det er noe.</div>';
+        }
       }, 400);
       visToast('Avvist — Ada vurderer alternativer.');
     });
     
     liste.appendChild(kort);
     venterCount++;
-    document.getElementById('venter-count').textContent = venterCount;
+    oppdaterVenterStatus();
     setTimeout(() => kort.classList.remove('ny'), 2500);
   }
 
   function leggTilFaktura(faktura) {
     const liste = document.getElementById('fakturaer-liste');
-    // Finn faktura-seksjon eller lag den
-    let seksjon = liste.querySelector('.faktura-seksjon');
-    if (!seksjon) {
-      const tittel = document.createElement('div');
-      tittel.className = 'seksjon-tittel';
-      tittel.textContent = 'Fakturaer';
-      liste.insertBefore(tittel, liste.firstChild);
-      seksjon = document.createElement('div');
-      seksjon.className = 'faktura-seksjon';
-      tittel.insertAdjacentElement('afterend', seksjon);
-    }
-    
     const rad = document.createElement('div');
     rad.className = 'faktura-rad' + (faktura.utestaende ? ' utestaende' : '');
     rad.innerHTML = `
@@ -903,29 +1026,18 @@
       </div>
       <div class="faktura-belop">${faktura.belop}</div>
     `;
-    seksjon.insertBefore(rad, seksjon.firstChild);
+    liste.insertBefore(rad, liste.firstChild);
   }
 
   function leggTilRegnskap(regnskap) {
-    const liste = document.getElementById('fakturaer-liste');
-    let seksjon = liste.querySelector('.regnskap-seksjon');
-    if (!seksjon) {
-      const tittel = document.createElement('div');
-      tittel.className = 'seksjon-tittel';
-      tittel.textContent = 'Bokført';
-      liste.appendChild(tittel);
-      seksjon = document.createElement('div');
-      seksjon.className = 'regnskap-seksjon';
-      liste.appendChild(seksjon);
-    }
-    
+    const liste = document.getElementById('regnskap-liste');
     const rad = document.createElement('div');
     rad.className = 'regnskap-rad';
     rad.innerHTML = `
       <span class="regnskap-tekst">${regnskap.tekst}</span>
       <span class="regnskap-belop">${regnskap.belop}</span>
     `;
-    seksjon.insertBefore(rad, seksjon.firstChild);
+    liste.insertBefore(rad, liste.firstChild);
   }
 
   function leggTilMyndighet(myndighet) {
@@ -938,7 +1050,6 @@
       <div class="myndighet-status">${myndighet.status}</div>
     `;
     liste.insertBefore(kort, liste.firstChild);
-    document.getElementById('myndigheter-count').textContent = liste.children.length;
   }
 
   function leggTilKalender(item) {
@@ -952,35 +1063,18 @@
     liste.appendChild(rad);
   }
 
-  function oppdaterOkonomi(updates) {
-    if (updates.inn !== undefined) {
-      document.getElementById('okonomi-inn').textContent = updates.inn.toLocaleString('no-NO') + ' kr';
-    }
-    if (updates.utgifter !== undefined) {
-      document.getElementById('okonomi-utgifter').textContent = updates.utgifter.toLocaleString('no-NO') + ' kr';
-    }
-  }
-
   function oppdaterTid(tid) {
     document.getElementById('demo-tid').textContent = 'Torsdag · ' + tid;
   }
 
-  // === Initialiser dashboardet ===
+  // === Initialiser ===
   function init() {
-    // Innboks
     INNBOKS_START.forEach(e => leggTilEpost(e, false));
-    
-    // Fakturaer
     FAKTURAER_START.forEach(f => leggTilFaktura(f));
-    REGNSKAP_START.forEach(r => leggTilRegnskap(r));
-    
-    // Myndigheter
+    REGNSKAP_START.slice().reverse().forEach(r => leggTilRegnskap(r));
     MYNDIGHETER_START.forEach(m => leggTilMyndighet(m));
-    
-    // Kalender
     KALENDER_START.forEach(k => leggTilKalender(k));
     
-    // Puls
     PULS_START.forEach(p => {
       const liste = document.getElementById('puls-liste');
       const item = document.createElement('div');
@@ -992,17 +1086,17 @@
     document.getElementById('puls-count').textContent = pulsCount;
   }
 
-  // === Spill av skriptet ===
+  // === Spill skript ===
   function spillSkript() {
-    let cumulativeDelay = 2000;
-    SKRIPT.forEach((event, i) => {
+    let cumulativeDelay = 3000;
+    SKRIPT.forEach((event) => {
       cumulativeDelay += event.delay;
       setTimeout(() => {
         const d = event.data;
         if (d.tid) oppdaterTid(d.tid);
         
         if (event.type === 'epost') {
-          leggTilEpost({ fra: d.fra, emne: d.emne, preview: d.preview }, true);
+          leggTilEpost({ fra: d.fra, emne: d.emne, preview: d.preview, status: d.status }, true);
           leggTilPuls(d.tid, d.pulsTekst);
         } else if (event.type === 'venter') {
           leggTilVenter(d);
@@ -1011,11 +1105,9 @@
         } else if (event.type === 'bank') {
           leggTilFaktura(d.faktura);
           leggTilPuls(d.tid, d.pulsTekst);
-          if (d.okonomi) oppdaterOkonomi(d.okonomi);
         } else if (event.type === 'regnskap') {
           leggTilRegnskap(d.regnskap);
           leggTilPuls(d.tid, d.pulsTekst);
-          if (d.okonomi) oppdaterOkonomi(d.okonomi);
         } else if (event.type === 'myndighet') {
           leggTilMyndighet(d.myndighet);
           leggTilPuls(d.tid, d.pulsTekst);
@@ -1029,7 +1121,7 @@
     });
   }
 
-  // === Kommandolinje (kobler til ekte Ada-backend) ===
+  // === Kommandolinje ===
   document.getElementById('kommando-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = document.getElementById('kommando-input');
@@ -1072,7 +1164,6 @@
     knapp.disabled = false;
   });
 
-  // === Start! ===
   init();
   spillSkript();
 </script>
